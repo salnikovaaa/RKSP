@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pksp.dao.OrderRepository">
+
+    <insert id="saveOrder" parameterType="pksp.models.Order">
+        INSERT INTO orders (id, client_id, cake_id, count, total_price)
+        VALUES (#{id}::UUID,#{clientId}::UUID, #{cakeId}::UUID, #{count}, #{totalPrice})
+    </insert>
+
+    <select id="findAll" resultMap="OrderMap">
+        SELECT *
+        FROM orders
+    </select>
+
+
+    <update id="updateOrder" parameterType="pksp.models.Order">
+        UPDATE orders
+        SET client_id = #{clientId}::UUID, cake_id = #{cakeId}::UUID, count = #{count}, total_price = #{totalPrice}
+        WHERE id = #{id}::UUID
+    </update>
+
+
+    <delete id="deleteOrder" parameterType="pksp.models.Order">
+        DELETE FROM orders
+        WHERE id = #{id}::UUID
+    </delete>
+
+
+
+
+
+    <resultMap id="OrderMap" type="pksp.models.Order">
+        <result property="id" column="id"/>
+        <result property="clientId" column="client_id"/>
+        <result property="cakeId" column="cake_id"/>
+        <result property="count" column ="count"/>
+        <result property="totalPrice" column ="total_price"/>
+    </resultMap>
+
+
+
+
+
+</mapper>

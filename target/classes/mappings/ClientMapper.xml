@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pksp.dao.ClientRepository">
+
+    <insert id="saveClients" parameterType="pksp.models.Client">
+        INSERT INTO clients (id, name, email,phone_number)
+        VALUES (#{id}::UUID, #{name}, #{email}, #{phoneNumber})
+    </insert>
+
+    <select id="findAll" resultMap="ClientsMap">
+        SELECT *
+        FROM clients
+    </select>
+
+
+
+    <update id="updateClient" parameterType="pksp.models.Client">
+        UPDATE clients
+        SET name = #{name}, email = #{email}, phone_number = #{phoneNumber}
+        WHERE id = #{id}::UUID
+    </update>
+
+
+    <delete id="deleteClient" parameterType="pksp.models.Client">
+        DELETE FROM clients
+        WHERE id = #{id}::UUID
+    </delete>
+
+    <resultMap id="ClientsMap" type="pksp.models.Client">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="email" column="email"/>
+        <result property="phoneNumber" column="phone_number"/>
+    </resultMap>
+
+</mapper>
