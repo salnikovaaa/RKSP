@@ -1,4 +1,4 @@
-package pksp.controller;
+package pksp.controller.api;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -31,8 +32,7 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
 
         BindingResult bindingResult = ex.getBindingResult();
         List<String> fieldErrorsMsg = bindingResult.getFieldErrors().stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .toList();
+                .map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
 
         return this.handleExceptionInternal(ex, fieldErrorsMsg, headers, status, request);
     }

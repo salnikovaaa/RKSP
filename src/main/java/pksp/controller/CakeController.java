@@ -1,54 +1,54 @@
 package pksp.controller;
 
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import pksp.dto.CakeDto;
 import pksp.models.Cake;
 import pksp.service.CakeService;
-import pksp.service.OrderService;
 
-import javax.validation.Valid;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
-
-@RestController
+@Controller
 @RequestMapping("/cakes")
-@RequiredArgsConstructor
 public class CakeController {
-    public final CakeService cakeService;
+    private final CakeService cakeService;
+
+    @Autowired
+    public CakeController(CakeService cakeService) {
+        this.cakeService = cakeService;
+    }
 
     @GetMapping
-    public ModelAndView getAll(){
-        List<Cake> cakes = cakeService.findAll();
-        return new ModelAndView("catalog").addObject("cakes", cakes);
-    }
+    public ModelAndView getAll() {
+        List<CakeDto> cakes = cakeService.findAll()
+                .stream().map(this::convertToDto)
+                .collect(Collectors.toList());
 
-    @GetMapping("/{id}")
-    public Cake getById(@PathVariable("id") @Valid UUID id) {
-        return cakeService.findCakesById(id);
-    }
-/*
-    @GetMapping
-    public List<Cake> getAll() {
-        return cakeService.findAll();
-    }
-*/
-
-    @PostMapping
-    public void saveCake(@RequestBody @Valid Cake cake){
-        cakeService.saveCake(cake);
-    }
-
-    @PutMapping
-    public void update(@RequestBody @Valid Cake cake) {
-        cakeService.updateCake(cake);
+        return new ModelAndView("cakes").addObject("cakes", cakes);
     }
 
 
-    @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable("id") UUID id) {
-        cakeService.deleteCake(id);
+    @GetMapping("{id}")
+    public ModelAndView getCake(@PathVariable("id") Long id) {
+        CakeDto cake = convertToDto(cakeService.findCakesById(id));
+        return new ModelAndView("cakeInfo").addObject("cake", cake);
     }
+
+
+    private CakeDto convertToDto(Cake cake) {
+
+        return new CakeDto()
+                .setName(cake.getName())
+                .setDescription(cake.getDescription())
+                .setCompound(cake.getCompound())
+                .setPrice(cake.getPrice())
+                .setId(cake.getId())
+                .setImage(cake.getImage());
+    }
+
 }

@@ -1,35 +1,116 @@
 package pksp.models;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.Min;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.UUID;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Entity
+@Table(name = "orders")
 public class Order {
 
-    @NotNull(message = "id заказа не может быть пустым")
-    private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotNull(message = "id клиента не может быть пустым")
-    private UUID clientId;
+    @Column(name = "client_id", insertable = false, updatable = false)
+    private Long clientId;
 
-    @NotNull(message = "id торта не может быть пустым")
-    private UUID cakeId;
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private Client client;
 
-    @Min(value = 1, message = "Количество должно быть больше 0")
-    private Integer count;
+    @NotNull(message = "id клиента не может быть пустым")
+    @Column(name = "cake_id", insertable = false, updatable = false)
+    private Long cakeId;
 
-    private Integer totalPrice;
+    @ManyToOne
+    @JoinColumn(name = "cake_id")
+    private Cake cake;
+
+    @NotBlank(message = "Имя  не может быть пустым")
+    private String name;
+
+    @NotBlank(message = "email не может быть пустым")
+    private String email;
 
 
+    @NotNull(message = "Номер телефона не может быть пустым")
+    @Column(unique=true)
+    private String phoneNumber;
 
+    public Long getId() {
+        return id;
+    }
+
+    public Order setId(Long id) {
+        this.id = id;
+        return this;
+    }
+
+    public Long getClientId() {
+        return clientId;
+    }
+
+    public Order setClientId(Long clientId) {
+        this.clientId = clientId;
+        return this;
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
+    public Order setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Order setEmail(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+
+    public Order setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+        return this;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public Order setClient(Client client) {
+        this.client = client;
+        return this;
+    }
+
+    public Long getCakeId() {
+        return cakeId;
+    }
+
+    public Order setCakeId(Long cakeId) {
+        this.cakeId = cakeId;
+        return this;
+    }
+
+    public Cake getCake() {
+        return cake;
+    }
+
+    public Order setCake(Cake cake) {
+        this.cake = cake;
+        return this;
+    }
 }
